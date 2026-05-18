@@ -19,14 +19,30 @@ class Zombie {
     float    m_Health;
     Sprite   m_Sprite;
     Texture textureZombie;
+    bool m_Alive=true;
 
   public:
     void spawn(int x, int y, int type,int seed);
     Sprite& getSprite();
     FloatRect getBounds();
     Vector2f getPosition();
+    bool isAlive();
+    bool hit();
     void update(Time dt,Vector2f playerPos);
 };
+bool Zombie:: isAlive(){
+    return m_Alive;
+}
+bool Zombie::hit(){
+    m_Health--;
+    if(m_Health<=0){
+        m_Alive=false;
+        textureZombie.loadFromFile("graphics/blood.png");
+        m_Sprite.setTexture(textureZombie);
+        return true;
+    }
+    return false;
+}
 void Zombie::spawn(int x, int y, int type, int seed) {
     switch (type) {
     case 0: // Bloater
@@ -63,7 +79,7 @@ void Zombie::spawn(int x, int y, int type, int seed) {
     m_Sprite.setPosition(m_Position);
 }
 Sprite& Zombie::getSprite() {return m_Sprite;}
-FloatRect Zombie::getBounds() {return m_Sprite.getLocalBounds();}
+FloatRect Zombie::getBounds() {return m_Sprite.getGlobalBounds();}
 Vector2f Zombie::getPosition() {return m_Position;}
 void Zombie::update(Time dt,Vector2f playerPos) {
     if(playerPos.x > m_Position.x)
